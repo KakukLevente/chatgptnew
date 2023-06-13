@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>JSONPlaceholder Todos</title>
+  <style>
+    body {
+      background-color: #636566;
+      
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #ccc;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    .filter-buttons {
+      margin-bottom: 20px;
+    }
+
+    .filter-buttons button {
+      margin-right: 10px;
+      padding: 10px 15px;
+      background-color: #004085;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .filter-buttons button:hover {
+      background-color: #004085;
+    }
+
+    .filter-buttons button:focus, .filter-buttons button.focus {
+      box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
+    }
+
+    .filter-buttons button.disabled, .filter-buttons button:disabled {
+      background-color: #004085;
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .filter-buttons button.active {
+      background-color: #004085;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #6b0303;
+      color: #fff;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>JSONPlaceholder Todos</h2>
+    
+    <div class="filter-buttons">
+      <button onclick="filterColumn('userId')">Filter by userId</button>
+      <button onclick="filterColumn('id')">Filter by id</button>
+      <button onclick="filterColumn('title')">Filter by title</button>
+      <button onclick="filterColumn('completed')">Filter by completed</button>
+      <button onclick="resetFilter()">Reset</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>userId</th>
+          <th>id</th>
+          <th>title</th>
+          <th>completed</th>
+        </tr>
+      </thead>
+      <tbody id="todoTableBody"></tbody>
+    </table>
+  </div>
+
+  <script>
+    let originalData = [];
+
+    fetch('https://jsonplaceholder.typicode.com/todos')
+      .then(response => response.json())
+      .then(data => {
+        originalData = data;
+        populateTable(data);
+      });
+
+    function populateTable(data) {
+      const todoTableBody = document.getElementById('todoTableBody');
+      todoTableBody.innerHTML = '';
+
+      data.forEach(todo => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${todo.userId}</td>
+          <td>${todo.id}</td>
+          <td>${todo.title}</td>
+          <td>${todo.completed}</td>
+        `;
+        todoTableBody.appendChild(row);
+      });
+    }
+
+    function filterColumn(column) {
+      const filterValue = prompt(`Enter value for ${column}`);
+      if (filterValue !== null) {
+        const filteredData = originalData.filter(todo => String(todo[column]).toLowerCase().includes(filterValue.toLowerCase()));
+        populateTable(filteredData);
+      }
+    }
+
+    function resetFilter() {
+      populateTable(originalData);
+    }
+  </script>
+</body>
+</html>
